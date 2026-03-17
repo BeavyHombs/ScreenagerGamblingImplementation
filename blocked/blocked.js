@@ -5,6 +5,7 @@
 'use strict';
 
 let latestEndTime = null;
+let renderLoopId = null;
 
 (async function () {
     // ── Read site from URL param (set by the DNR redirect rule) ──
@@ -19,7 +20,10 @@ let latestEndTime = null;
         latestEndTime = resp.timer?.endTime;
 
         // Start live countdown loop
-        requestAnimationFrame(renderLoop);
+        renderLoopId = requestAnimationFrame(renderLoop);
+
+        // Cleanup loop on exit
+        window.addEventListener('unload', () => cancelAnimationFrame(renderLoopId));
 
         // Poll every 10s just in case time is added remotely
         setInterval(async () => {
@@ -55,7 +59,7 @@ function renderLoop() {
     if (el) el.textContent = remaining > 0 ? formatTime(remaining) : '00:00';
 
     // Auto navigation is handled by the 10s polling interval above, this loop is just for UI
-    requestAnimationFrame(renderLoop);
+    renderLoopId = requestAnimationFrame(renderLoop);
 }
 
 function sendMessage(payload) {

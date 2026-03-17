@@ -8,14 +8,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="popup.css" />
 </head>
 
 <body>
+    <!-- Atmospheric background -->
+    <div class="atmosphere" aria-hidden="true">
+        <div class="orb orb--1"></div>
+        <div class="orb orb--2"></div>
+        <div class="orb orb--3"></div>
+    </div>
     <div class="grain" aria-hidden="true"></div>
-    <div class="shell">
+
+    <div class="shell loading">
 
         <!-- Header -->
         <header class="header">
@@ -40,7 +47,7 @@
             </a>
         </header>
 
-        <!-- Status banner (shown when blocking is active) -->
+        <!-- Status banner -->
         <div class="status-banner" id="status-banner" hidden>
             <span class="status-dot"></span>
             <span id="status-text">Screen time blocked</span>
@@ -49,7 +56,14 @@
         <!-- Timer ring -->
         <div class="timer-section">
             <div class="ring-container" id="ring-container">
-                <svg class="ring-svg" viewBox="0 0 200 200" aria-hidden="true">
+                <svg class="ring-svg" viewBox="0 0 200 200" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                    aria-valuemax="100" aria-label="Time remaining">
+                    <defs>
+                        <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6b9a6e" />
+                            <stop offset="100%" stop-color="#4a7a5e" />
+                        </linearGradient>
+                    </defs>
                     <circle class="ring-track" cx="100" cy="100" r="88" />
                     <circle class="ring-progress" id="ring-progress" cx="100" cy="100" r="88" />
                 </svg>
@@ -80,8 +94,9 @@
         <!-- Difficulty toggle -->
         <div class="section-label">Difficulty</div>
         <div class="difficulty-toggle" id="difficulty-toggle" role="group" aria-label="Difficulty mode">
-            <button class="diff-btn active" id="diff-standard" data-diff="STANDARD">Standard</button>
-            <button class="diff-btn" id="diff-hard" data-diff="HARD">Hard</button>
+            <button class="diff-btn active" id="diff-standard" data-diff="STANDARD"
+                aria-pressed="true">Standard</button>
+            <button class="diff-btn" id="diff-hard" data-diff="HARD" aria-pressed="false">Hard</button>
         </div>
 
         <!-- Error / info messages -->

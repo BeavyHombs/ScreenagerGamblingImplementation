@@ -1,20 +1,25 @@
-/* ─── FocusLock Blocked Page — Light Minimal + Framer Animations ───── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   FocusLock Blocked Page — Elevated Light Theme with Framer Animations
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
-    --bg: #faf8f4;
-    --bg-card: #ffffff;
-    --surface: #f2efe9;
-    --border: #e5e0d8;
+    --bg: #f8f6f1;
+    --bg-card: rgba(255, 255, 255, 0.72);
+    --surface: #eeebe4;
+    --border: #e2ded6;
     --warn: #c45c4a;
     --warn-soft: rgba(196, 92, 74, 0.08);
-    --warn-glow: rgba(196, 92, 74, 0.15);
+    --warn-glow: rgba(196, 92, 74, 0.18);
     --accent: #5b7a5e;
-    --text: #2c2c2c;
+    --accent-soft: rgba(91, 122, 94, 0.10);
+    --text: #1a1a1a;
     --muted: #8a8680;
     --font-serif: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'DM Sans', -apple-system, sans-serif;
-    --radius: 12px;
-    --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.04);
+    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.06);
+    --glass: saturate(1.8) blur(16px);
     --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     --spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -34,21 +39,112 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-sans);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* ── Atmospheric Orbs ──────────────────────────────────────────────────────── */
+.atmosphere {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
     overflow: hidden;
 }
 
-/* ── Paper grain ───────────────────────────────────────────────────────── */
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    will-change: transform;
+}
+
+.orb--1 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(196, 92, 74, 0.18), transparent 70%);
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: orb-1 14s ease-in-out infinite;
+}
+
+.orb--2 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(91, 122, 94, 0.15), transparent 70%);
+    bottom: 10%;
+    left: -60px;
+    animation: orb-2 18s ease-in-out infinite;
+}
+
+.orb--3 {
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(91, 122, 94, 0.12), transparent 70%);
+    bottom: 20%;
+    right: -30px;
+    animation: orb-3 12s ease-in-out infinite;
+}
+
+.orb--4 {
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(196, 92, 74, 0.1), transparent 70%);
+    top: 40%;
+    right: 15%;
+    animation: orb-2 16s ease-in-out 3s infinite;
+}
+
+@keyframes orb-1 {
+
+    0%,
+    100% {
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        transform: translateX(-45%) scale(1.15);
+    }
+}
+
+@keyframes orb-2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(30px, -25px) scale(1.1);
+    }
+}
+
+@keyframes orb-3 {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(-20px, -15px);
+    }
+}
+
+/* ── Paper Grain ───────────────────────────────────────────────────────────── */
 .grain {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    opacity: 0.3;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    z-index: 100;
+    opacity: 0.25;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    z-index: 101;
 }
 
-/* ── Scene ─────────────────────────────────────────────────────────────── */
+/* ── Scene ──────────────────────────────────────────────────────────────────── */
 .scene {
     min-height: 100vh;
     display: flex;
@@ -56,82 +152,77 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
-    gap: 32px;
-    padding: 48px 32px;
+    gap: 36px;
+    padding: 60px 40px;
+    z-index: 1;
 }
 
-/* ── Lock with Framer entrance ─────────────────────────────────────────── */
+/* ── Lock icon ─────────────────────────────────────────────────────────────── */
 .lock-wrap {
+    position: relative;
     animation: lock-drop 1s var(--spring-soft) both;
+}
+
+.lock-ring {
+    display: none;
 }
 
 .lock-svg {
     width: 80px;
     height: 80px;
-    opacity: 0.85;
-    filter: drop-shadow(0 0 12px var(--warn-glow));
-    animation: lock-breathe 3s ease-in-out 1s infinite;
+    color: var(--warn);
+    filter: drop-shadow(0 0 16px var(--warn-glow));
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes lock-drop {
     0% {
         opacity: 0;
-        transform: scale(0.3) translateY(-40px) rotate(-15deg);
+        transform: scale(0.2) translateY(-50px) rotate(-20deg);
     }
 
-    70% {
+    60% {
         opacity: 1;
-        transform: scale(1.08) translateY(4px) rotate(2deg);
+        transform: scale(1.1) translateY(5px) rotate(3deg);
+    }
+
+    80% {
+        transform: scale(0.97) translateY(-2px) rotate(-1deg);
     }
 
     100% {
-        opacity: 1;
         transform: scale(1) translateY(0) rotate(0deg);
     }
 }
 
-@keyframes lock-breathe {
-
-    0%,
-    100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 12px var(--warn-glow));
-    }
-
-    50% {
-        transform: scale(1.04);
-        filter: drop-shadow(0 0 20px rgba(196, 92, 74, 0.25));
-    }
-}
-
-/* ── Content staggered reveal ──────────────────────────────────────────── */
+/* ── Content stagger ───────────────────────────────────────────────────────── */
 .content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 22px;
     text-align: center;
-    max-width: 420px;
+    max-width: 440px;
     position: relative;
     z-index: 1;
 }
 
 .heading {
     font-family: var(--font-serif);
-    font-size: 42px;
+    font-size: 46px;
     font-weight: 600;
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
     color: var(--text);
-    line-height: 1.1;
-    animation: text-reveal 0.8s var(--ease-out) 0.3s both;
+    line-height: 1.05;
+    animation: text-up 0.8s var(--ease-out) 0.3s both;
 }
 
 .sub {
     font-size: 15px;
     color: var(--muted);
-    line-height: 1.6;
-    font-weight: 400;
-    animation: text-reveal 0.8s var(--ease-out) 0.45s both;
+    line-height: 1.7;
+    animation: text-up 0.8s var(--ease-out) 0.45s both;
 }
 
 .sub strong {
@@ -139,10 +230,10 @@ body {
     font-weight: 600;
 }
 
-@keyframes text-reveal {
+@keyframes text-up {
     0% {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(24px);
     }
 
     100% {
@@ -151,26 +242,28 @@ body {
     }
 }
 
-/* ── Time Card ─────────────────────────────────────────────────────────── */
+/* ── Time Card ─────────────────────────────────────────────────────────────── */
 .time-card {
     width: 100%;
     background: var(--bg-card);
+    backdrop-filter: var(--glass);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     overflow: hidden;
     animation: card-spring 0.7s var(--spring) 0.55s both;
-    transition: transform 0.35s var(--spring), box-shadow 0.35s ease;
+    transition: transform 0.4s var(--spring), box-shadow 0.4s ease;
 }
 
 .time-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
 }
 
 @keyframes card-spring {
     0% {
         opacity: 0;
-        transform: translateY(24px) scale(0.95);
+        transform: translateY(28px) scale(0.94);
     }
 
     100% {
@@ -183,20 +276,21 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 22px;
+    padding: 18px 24px;
 }
 
 .time-label {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--muted);
 }
 
 .time-val {
     font-family: var(--font-sans);
-    font-size: 22px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 700;
     font-variant-numeric: tabular-nums lining-nums;
     color: var(--text);
 }
@@ -207,22 +301,22 @@ body {
 
 .time-divider {
     height: 1px;
-    background: var(--border);
-    margin: 0 22px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 24px;
 }
 
-/* ── CTA Row with spring interactions ──────────────────────────────────── */
+/* ── CTA Row ───────────────────────────────────────────────────────────────── */
 .cta-row {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
-    animation: text-reveal 0.7s var(--ease-out) 0.7s both;
+    animation: text-up 0.7s var(--ease-out) 0.7s both;
 }
 
 .cta-btn {
-    padding: 12px 26px;
-    border-radius: 10px;
+    padding: 13px 28px;
+    border-radius: var(--radius);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -236,52 +330,54 @@ body {
 .cta-btn--primary {
     background: var(--accent);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(91, 122, 94, 0.2);
+    box-shadow: 0 2px 10px rgba(91, 122, 94, 0.25);
 }
 
 .cta-btn--primary:hover {
     background: #4d6b50;
-    box-shadow: 0 6px 20px rgba(91, 122, 94, 0.35);
-    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 28px rgba(91, 122, 94, 0.35);
+    transform: translateY(-3px) scale(1.03);
 }
 
 .cta-btn--primary:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(0) scale(0.97);
 }
 
 .cta-btn--ghost {
     background: var(--bg-card);
+    backdrop-filter: var(--glass);
     color: var(--muted);
     box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .cta-btn--ghost:hover {
     color: var(--text);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
 }
 
 .cta-btn--ghost:active {
-    transform: translateY(0) scale(0.98);
+    transform: scale(0.97);
 }
 
-/* ── Hint ──────────────────────────────────────────────────────────────── */
+/* ── Hint ──────────────────────────────────────────────────────────────────── */
 .hint {
     font-size: 12px;
     color: var(--muted);
-    opacity: 0;
     font-style: italic;
-    animation: hint-fade 1s ease 1.2s forwards;
+    opacity: 0;
+    animation: hint-fade 1.2s ease 1.4s forwards;
 }
 
 @keyframes hint-fade {
     0% {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(10px);
     }
 
     100% {
-        opacity: 0.6;
+        opacity: 0.5;
         transform: translateY(0);
     }
 }

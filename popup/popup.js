@@ -8,7 +8,7 @@
 'use strict';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const RING_CIRCUMFERENCE = 2 * Math.PI * 88; // matches CSS ring r=88
+const RING_CIRCUMFERENCE = 553.0; // Strictly matches `--ring-circ: 553.0;` in CSS
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const timerDisplay = document.getElementById('timer-display');
@@ -26,6 +26,7 @@ const diffHard = document.getElementById('diff-hard');
 let currentDifficulty = 'STANDARD';
 let latestTimer = { endTime: null, earnedSeconds: 0 };
 let renderLoopId = null;
+let hasLoadedData = false;
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
@@ -38,7 +39,10 @@ async function init() {
     diffHard.addEventListener('click', () => setDifficulty('HARD'));
 
     // Start 60fps client-side render loop
-    requestAnimationFrame(renderLoop);
+    renderLoopId = requestAnimationFrame(renderLoop);
+
+    // Cleanup loop on exit
+    window.addEventListener('unload', () => cancelAnimationFrame(renderLoopId));
 }
 
 // ── Load State ───────────────────────────────────────────────────────
@@ -48,6 +52,7 @@ async function loadDataFromBackground() {
         if (response.error) throw new Error(response.error);
 
         latestTimer = response.timer;
+        hasLoadedData = true;
         renderStatic(response);
     } catch (err) {
         console.error('Could not reach background worker:', err.message);
@@ -66,8 +71,10 @@ function renderStatic({ settings, assignments }) {
     const graded = raw.filter(a => a.status === 'graded' || a.status === 'turned-in');
     const missing = raw.filter(a => a.status === 'missing');
 
-    statAssignments.textContent = graded.length || '–';
+    statAssignments.textContent = graded.length || 'none';
     statMissing.textContent = missing.length || '0';
+
+    document.querySelector('.shell').classList.remove('loading');
 
     if (graded.length > 0) {
         const grades = graded.map(a => {
@@ -84,6 +91,11 @@ function renderStatic({ settings, assignments }) {
 
 // ── Live Render Loop ─────────────────────────────────────────────────────────────
 function renderLoop() {
+    if (!hasLoadedData) {
+        renderLoopId = requestAnimationFrame(renderLoop);
+        return;
+    }
+
     const earned = latestTimer.earnedSeconds ?? 0;
 
     // Calculate remaining exact seconds live
@@ -95,10 +107,11 @@ function renderLoop() {
     timerDisplay.textContent = formatTime(remaining);
     timerEarned.textContent = `of ${formatTime(earned)} earned`;
 
-    // Ring arc
+    // Ring arc + Accessibility
     const fraction = earned > 0 ? remaining / earned : 0;
     const offset = RING_CIRCUMFERENCE * (1 - Math.max(0, Math.min(1, fraction)));
     ringProgress.style.strokeDashoffset = offset;
+    document.querySelector('.ring-svg').setAttribute('aria-valuenow', Math.round(fraction * 100));
 
     // Color states
     const isBlocked = remaining <= 0;
@@ -115,7 +128,7 @@ function renderLoop() {
         statusText.textContent = 'Screen time blocked';
     }
 
-    requestAnimationFrame(renderLoop);
+    renderLoopId = requestAnimationFrame(renderLoop);
 }
 
 // ── Difficulty Toggle ─────────────────────────────────────────────────────────
@@ -125,6 +138,8 @@ async function setDifficulty(mode) {
     currentDifficulty = mode;
     diffStandard.classList.toggle('active', mode === 'STANDARD');
     diffHard.classList.toggle('active', mode === 'HARD');
+    diffStandard.setAttribute('aria-pressed', mode === 'STANDARD');
+    diffHard.setAttribute('aria-pressed', mode === 'HARD');
 
     // Persist to settings, service worker will recompute timer
     const result = await sendMessage({ type: 'GET_STATE' });

@@ -1,33 +1,39 @@
-/* ─── FocusLock Popup — Light Minimalist + Framer Animations ─────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   FocusLock Popup — Elevated Light Theme with Framer Animations
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Tokens ────────────────────────────────────────────────────────────── */
+/* ── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
-  --bg: #faf8f4;
-  --bg-card: #ffffff;
-  --surface: #f2efe9;
-  --border: #e5e0d8;
+  --bg: #f8f6f1;
+  --bg-card: rgba(255, 255, 255, 0.72);
+  --bg-card-solid: #ffffff;
+  --surface: #eeebe4;
+  --border: #e2ded6;
   --accent: #5b7a5e;
+  --accent-light: #7da07f;
   --accent-soft: rgba(91, 122, 94, 0.10);
   --accent-mid: rgba(91, 122, 94, 0.20);
-  --accent-glow: rgba(91, 122, 94, 0.12);
+  --accent-glow: rgba(91, 122, 94, 0.15);
   --warn: #c45c4a;
-  --warn-soft: rgba(196, 92, 74, 0.10);
-  --text: #2c2c2c;
+  --warn-soft: rgba(196, 92, 74, 0.08);
+  --text: #1a1a1a;
   --text-muted: #8a8680;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'DM Sans', -apple-system, sans-serif;
-  --radius: 12px;
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
-  --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.06), 0 12px 32px rgba(0, 0, 0, 0.06);
+  --glass: saturate(1.8) blur(16px);
   --ring-circ: 553.0;
 
-  /* Framer-style spring easing */
+  /* Spring easing curves */
   --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── Reset ─────────────────────────────────────────────────────────────── */
+/* ── Reset ──────────────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -52,89 +58,170 @@ button {
   background: none;
 }
 
-/* ── Body & Grain ──────────────────────────────────────────────────────── */
+/* ── Body ───────────────────────────────────────────────────────────────────── */
 body {
   width: 360px;
-  min-height: 480px;
+  min-height: 520px;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 14px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
   position: relative;
 }
 
+/* ── Atmospheric Background ─────────────────────────────────────────────────── */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+  will-change: transform;
+}
+
+.orb--1 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(91, 122, 94, 0.3), transparent 70%);
+  top: -40px;
+  right: -30px;
+  animation: orb-drift-1 12s ease-in-out infinite;
+}
+
+.orb--2 {
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(196, 92, 74, 0.12), transparent 70%);
+  bottom: 60px;
+  left: -40px;
+  animation: orb-drift-2 15s ease-in-out infinite;
+}
+
+.orb--3 {
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(91, 122, 94, 0.15), transparent 70%);
+  bottom: -20px;
+  right: 40px;
+  animation: orb-drift-3 10s ease-in-out infinite;
+}
+
+@keyframes orb-drift-1 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(-20px, 30px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(15px, -10px) scale(0.95);
+  }
+}
+
+@keyframes orb-drift-2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(30px, -20px) scale(1.15);
+  }
+}
+
+@keyframes orb-drift-3 {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-25px, -15px);
+  }
+}
+
+/* ── Paper Grain ────────────────────────────────────────────────────────────── */
 .grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.3;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  z-index: 100;
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  z-index: 101;
 }
 
+/* ── Main Shell ─────────────────────────────────────────────────────────────── */
 .shell {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px 22px 22px;
+  gap: 18px;
+  padding: 22px 24px 28px;
   position: relative;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   FRAMER-STYLE ENTRANCE ANIMATIONS — staggered spring reveals
-   ═══════════════════════════════════════════════════════════════════════ */
-
-/* Base state: everything starts invisible + shifted */
-.header,
-.status-banner:not([hidden]),
-.timer-section,
-.stats-row,
-.section-label,
-.difficulty-toggle,
-.message-bar:not([hidden]) {
-  animation: spring-in 0.7s var(--spring) both;
+.shell.loading {
+  opacity: 0;
 }
 
-/* Stagger delays */
+/* ═══════════════════════════════════════════════════════════════════════════
+   FRAMER-STYLE STAGGERED SPRING ENTRANCE
+   ═══════════════════════════════════════════════════════════════════════════ */
 .header {
-  animation-delay: 0ms;
+  animation: spring-in 0.7s var(--spring) 0ms both;
 }
 
 .timer-section {
-  animation-delay: 80ms;
+  animation: spring-in 0.7s var(--spring) 60ms both;
 }
 
 .stats-row {
-  animation-delay: 180ms;
+  animation: spring-in 0.7s var(--spring) 160ms both;
 }
 
 .section-label {
-  animation-delay: 260ms;
+  animation: spring-in 0.7s var(--spring) 250ms both;
 }
 
 .difficulty-toggle {
-  animation-delay: 300ms;
+  animation: spring-in 0.7s var(--spring) 290ms both;
 }
 
-/* Individual stat cards stagger within the row */
 .stat-card:nth-child(1) {
-  animation: spring-in 0.6s var(--spring) 200ms both;
+  animation: spring-in 0.6s var(--spring) 180ms both;
 }
 
 .stat-card:nth-child(2) {
-  animation: spring-in 0.6s var(--spring) 260ms both;
+  animation: spring-in 0.6s var(--spring) 240ms both;
 }
 
 .stat-card:nth-child(3) {
-  animation: spring-in 0.6s var(--spring) 320ms both;
+  animation: spring-in 0.6s var(--spring) 300ms both;
 }
 
 @keyframes spring-in {
   0% {
     opacity: 0;
-    transform: translateY(16px) scale(0.96);
+    transform: translateY(18px) scale(0.96);
   }
 
   100% {
@@ -143,15 +230,15 @@ body {
   }
 }
 
-/* Ring has its own scale-up entrance */
+/* Ring has its own bouncy scale-up */
 .ring-container {
-  animation: ring-reveal 0.9s var(--spring-soft) 100ms both;
+  animation: ring-reveal 1s var(--spring-soft) 80ms both;
 }
 
 @keyframes ring-reveal {
   0% {
     opacity: 0;
-    transform: scale(0.7);
+    transform: scale(0.65);
   }
 
   100% {
@@ -160,7 +247,7 @@ body {
   }
 }
 
-/* ── Header ────────────────────────────────────────────────────────────── */
+/* ── Header ─────────────────────────────────────────────────────────────────── */
 .header {
   display: flex;
   align-items: center;
@@ -170,12 +257,12 @@ body {
 .logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .logo-mark {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,19 +271,19 @@ body {
 }
 
 .logo-mark:hover {
-  transform: rotate(-10deg) scale(1.1);
+  transform: rotate(-12deg) scale(1.15);
 }
 
 .logo-mark svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
 }
 
 .logo-text {
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 20px;
-  letter-spacing: -0.3px;
+  font-size: 22px;
+  letter-spacing: -0.4px;
   color: var(--text);
 }
 
@@ -204,37 +291,38 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
   color: var(--text-muted);
-  transition: color 0.2s, background 0.2s, transform 0.4s var(--spring);
+  transition: color 0.2s, background 0.2s, transform 0.5s var(--spring);
 }
 
 .settings-btn:hover {
   color: var(--accent);
   background: var(--accent-soft);
-  transform: rotate(60deg);
+  transform: rotate(90deg);
 }
 
 .settings-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
 }
 
-/* ── Status Banner ─────────────────────────────────────────────────────── */
+/* ── Status Banner ──────────────────────────────────────────────────────────── */
 .status-banner {
   display: flex;
   align-items: center;
   gap: 8px;
   background: var(--warn-soft);
-  border: 1px solid rgba(196, 92, 74, 0.2);
+  border: 1px solid rgba(196, 92, 74, 0.15);
   border-radius: var(--radius);
-  padding: 10px 14px;
+  padding: 11px 16px;
   font-size: 12px;
   font-weight: 500;
   color: var(--warn);
   letter-spacing: 0.02em;
+  backdrop-filter: var(--glass);
   animation: slide-down 0.5s var(--ease-out) both, pulse-soft 3s ease-in-out 0.5s infinite;
 }
 
@@ -250,7 +338,7 @@ body {
 @keyframes slide-down {
   0% {
     opacity: 0;
-    transform: translateY(-12px);
+    transform: translateY(-14px);
   }
 
   100% {
@@ -267,7 +355,7 @@ body {
   }
 
   50% {
-    opacity: 0.65;
+    opacity: 0.6;
   }
 }
 
@@ -281,44 +369,40 @@ body {
 
   50% {
     opacity: 0.3;
-    transform: scale(0.6);
+    transform: scale(0.5);
   }
 }
 
-/* ── Timer Ring ────────────────────────────────────────────────────────── */
+/* ── Timer Ring ─────────────────────────────────────────────────────────────── */
 .timer-section {
   display: flex;
   justify-content: center;
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
 .ring-container {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 210px;
+  height: 210px;
 }
 
 .ring-svg {
-  width: 200px;
-  height: 200px;
+  width: 210px;
+  height: 210px;
   transform: rotate(-90deg);
-  filter: drop-shadow(0 0 8px var(--accent-glow));
+  filter: drop-shadow(0 0 12px var(--accent-glow));
   transition: filter 0.6s ease;
-}
-
-.ring-svg:hover {
-  filter: drop-shadow(0 0 16px var(--accent-mid));
 }
 
 .ring-track {
   fill: none;
   stroke: var(--surface);
-  stroke-width: 5;
+  stroke-width: 4.5;
 }
 
 .ring-progress {
   fill: none;
-  stroke: var(--accent);
+  stroke: url(#ring-grad);
   stroke-width: 5;
   stroke-linecap: round;
   stroke-dasharray: 553.0;
@@ -328,7 +412,7 @@ body {
 
 .ring-progress.warn {
   stroke: var(--warn);
-  filter: drop-shadow(0 0 6px rgba(196, 92, 74, 0.3));
+  filter: drop-shadow(0 0 8px rgba(196, 92, 74, 0.25));
 }
 
 .ring-progress.blocked {
@@ -347,23 +431,23 @@ body {
 }
 
 .timer-label {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .timer-display {
   font-family: var(--font-sans);
-  font-size: 40px;
+  font-size: 42px;
   font-weight: 500;
   font-variant-numeric: tabular-nums lining-nums;
-  letter-spacing: -1px;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: -1.5px;
   color: var(--text);
   line-height: 1;
-  transition: color 0.4s ease, transform 0.3s var(--spring);
+  transition: color 0.4s ease;
 }
 
 .timer-display.warn {
@@ -375,13 +459,13 @@ body {
 }
 
 .timer-sub {
-  font-family: var(--font-sans);
   font-size: 11px;
   color: var(--text-muted);
   font-weight: 400;
+  font-style: italic;
 }
 
-/* ── Stats Row ─────────────────────────────────────────────────────────── */
+/* ── Stats Row ──────────────────────────────────────────────────────────────── */
 .stats-row {
   display: flex;
   gap: 10px;
@@ -393,25 +477,27 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 14px 8px;
-  gap: 5px;
+  padding: 16px 8px 14px;
+  gap: 6px;
   background: var(--bg-card);
+  backdrop-filter: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  transition: transform 0.35s var(--spring), box-shadow 0.35s ease;
+  transition: transform 0.4s var(--spring), box-shadow 0.4s ease;
   will-change: transform;
 }
 
 .stat-card:hover {
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-4px) scale(1.03);
   box-shadow: var(--shadow-hover);
 }
 
 .stat-value {
   font-family: var(--font-sans);
-  font-size: 24px;
+  font-size: 26px;
   font-variant-numeric: tabular-nums lining-nums;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--text);
   line-height: 1;
@@ -422,27 +508,29 @@ body {
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 500;
+  letter-spacing: 0.1em;
+  font-weight: 600;
 }
 
-/* ── Section label ─────────────────────────────────────────────────────── */
+/* ── Section label ──────────────────────────────────────────────────────────── */
 .section-label {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: -8px;
+  margin-bottom: -10px;
 }
 
-/* ── Difficulty Toggle ─────────────────────────────────────────────────── */
+/* ── Difficulty Toggle ──────────────────────────────────────────────────────── */
 .difficulty-toggle {
   display: flex;
   background: var(--bg-card);
+  backdrop-filter: var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius);
   padding: 4px;
   gap: 4px;
@@ -451,19 +539,19 @@ body {
 
 .diff-btn {
   flex: 1;
-  padding: 8px;
-  border-radius: 9px;
+  padding: 9px;
+  border-radius: var(--radius-sm);
   color: var(--text-muted);
   font-size: 13px;
   font-weight: 500;
-  transition: background 0.3s var(--ease-out), color 0.25s, transform 0.25s var(--spring);
-  position: relative;
+  transition: background 0.35s var(--ease-out), color 0.25s, transform 0.25s var(--spring), box-shadow 0.3s;
 }
 
 .diff-btn.active {
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(91, 122, 94, 0.25);
 }
 
 .diff-btn:hover:not(.active) {
@@ -475,13 +563,14 @@ body {
   transform: scale(0.95);
 }
 
-/* ── Message Bar ───────────────────────────────────────────────────────── */
+/* ── Message Bar ────────────────────────────────────────────────────────────── */
 .message-bar {
-  padding: 10px 14px;
+  padding: 11px 16px;
   border-radius: var(--radius);
   font-size: 12px;
   line-height: 1.5;
   background: var(--bg-card);
+  backdrop-filter: var(--glass);
   box-shadow: var(--shadow);
   color: var(--text-muted);
   animation: spring-in 0.5s var(--spring) both;
