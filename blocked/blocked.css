@@ -1,4 +1,4 @@
-/* ─── FocusLock Blocked Page — Light Minimalist Theme ──────────────────── */
+/* ─── FocusLock Blocked Page — Light Minimal + Framer Animations ───── */
 
 :root {
     --bg: #faf8f4;
@@ -7,6 +7,7 @@
     --border: #e5e0d8;
     --warn: #c45c4a;
     --warn-soft: rgba(196, 92, 74, 0.08);
+    --warn-glow: rgba(196, 92, 74, 0.15);
     --accent: #5b7a5e;
     --text: #2c2c2c;
     --muted: #8a8680;
@@ -14,6 +15,9 @@
     --font-sans: 'DM Sans', -apple-system, sans-serif;
     --radius: 12px;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+    --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *,
@@ -33,18 +37,18 @@ body {
     overflow: hidden;
 }
 
-/* ── Paper grain ───────────────────────────────────────────────────────────── */
+/* ── Paper grain ───────────────────────────────────────────────────────── */
 .grain {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    opacity: 0.35;
+    opacity: 0.3;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
     background-repeat: repeat;
     z-index: 100;
 }
 
-/* ── Scene ─────────────────────────────────────────────────────────────────── */
+/* ── Scene ─────────────────────────────────────────────────────────────── */
 .scene {
     min-height: 100vh;
     display: flex;
@@ -52,34 +56,55 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
-    gap: 36px;
+    gap: 32px;
     padding: 48px 32px;
 }
 
-/* ── Lock ──────────────────────────────────────────────────────────────────── */
+/* ── Lock with Framer entrance ─────────────────────────────────────────── */
 .lock-wrap {
-    animation: lock-float 4s ease-in-out infinite;
+    animation: lock-drop 1s var(--spring-soft) both;
 }
 
 .lock-svg {
     width: 80px;
     height: 80px;
     opacity: 0.85;
+    filter: drop-shadow(0 0 12px var(--warn-glow));
+    animation: lock-breathe 3s ease-in-out 1s infinite;
 }
 
-@keyframes lock-float {
+@keyframes lock-drop {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) translateY(-40px) rotate(-15deg);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(1.08) translateY(4px) rotate(2deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotate(0deg);
+    }
+}
+
+@keyframes lock-breathe {
 
     0%,
     100% {
-        transform: translateY(0);
+        transform: scale(1);
+        filter: drop-shadow(0 0 12px var(--warn-glow));
     }
 
     50% {
-        transform: translateY(-6px);
+        transform: scale(1.04);
+        filter: drop-shadow(0 0 20px rgba(196, 92, 74, 0.25));
     }
 }
 
-/* ── Content ───────────────────────────────────────────────────────────────── */
+/* ── Content staggered reveal ──────────────────────────────────────────── */
 .content {
     display: flex;
     flex-direction: column;
@@ -98,6 +123,7 @@ body {
     letter-spacing: -1px;
     color: var(--text);
     line-height: 1.1;
+    animation: text-reveal 0.8s var(--ease-out) 0.3s both;
 }
 
 .sub {
@@ -105,6 +131,7 @@ body {
     color: var(--muted);
     line-height: 1.6;
     font-weight: 400;
+    animation: text-reveal 0.8s var(--ease-out) 0.45s both;
 }
 
 .sub strong {
@@ -112,13 +139,44 @@ body {
     font-weight: 600;
 }
 
-/* ── Time Card ─────────────────────────────────────────────────────────────── */
+@keyframes text-reveal {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Time Card ─────────────────────────────────────────────────────────── */
 .time-card {
     width: 100%;
     background: var(--bg-card);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     overflow: hidden;
+    animation: card-spring 0.7s var(--spring) 0.55s both;
+    transition: transform 0.35s var(--spring), box-shadow 0.35s ease;
+}
+
+.time-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes card-spring {
+    0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .time-row {
@@ -136,9 +194,10 @@ body {
 }
 
 .time-val {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: 22px;
-    font-weight: 700;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
     color: var(--text);
 }
 
@@ -152,12 +211,13 @@ body {
     margin: 0 22px;
 }
 
-/* ── CTA Row ───────────────────────────────────────────────────────────────── */
+/* ── CTA Row with spring interactions ──────────────────────────────────── */
 .cta-row {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
+    animation: text-reveal 0.7s var(--ease-out) 0.7s both;
 }
 
 .cta-btn {
@@ -166,7 +226,7 @@ body {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s var(--spring);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -181,7 +241,12 @@ body {
 
 .cta-btn--primary:hover {
     background: #4d6b50;
-    box-shadow: 0 4px 16px rgba(91, 122, 94, 0.3);
+    box-shadow: 0 6px 20px rgba(91, 122, 94, 0.35);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.cta-btn--primary:active {
+    transform: translateY(0) scale(0.98);
 }
 
 .cta-btn--ghost {
@@ -192,12 +257,31 @@ body {
 
 .cta-btn--ghost:hover {
     color: var(--text);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
 }
 
-/* ── Hint ──────────────────────────────────────────────────────────────────── */
+.cta-btn--ghost:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* ── Hint ──────────────────────────────────────────────────────────────── */
 .hint {
     font-size: 12px;
     color: var(--muted);
-    opacity: 0.7;
+    opacity: 0;
     font-style: italic;
+    animation: hint-fade 1s ease 1.2s forwards;
+}
+
+@keyframes hint-fade {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    100% {
+        opacity: 0.6;
+        transform: translateY(0);
+    }
 }

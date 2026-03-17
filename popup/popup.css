@@ -1,19 +1,16 @@
-/* ─── FocusLock Popup — Light Minimalist Theme ──────────────────────────── */
+/* ─── FocusLock Popup — Light Minimalist + Framer Animations ─────────── */
 
-/* ── Tokens ────────────────────────────────────────────────────────────────── */
+/* ── Tokens ────────────────────────────────────────────────────────────── */
 :root {
   --bg: #faf8f4;
-  /* warm parchment */
   --bg-card: #ffffff;
   --surface: #f2efe9;
-  /* soft linen */
   --border: #e5e0d8;
   --accent: #5b7a5e;
-  /* olive sage */
   --accent-soft: rgba(91, 122, 94, 0.10);
   --accent-mid: rgba(91, 122, 94, 0.20);
+  --accent-glow: rgba(91, 122, 94, 0.12);
   --warn: #c45c4a;
-  /* warm terracotta */
   --warn-soft: rgba(196, 92, 74, 0.10);
   --text: #2c2c2c;
   --text-muted: #8a8680;
@@ -21,11 +18,16 @@
   --font-sans: 'DM Sans', -apple-system, sans-serif;
   --radius: 12px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.05);
   --ring-circ: 553.0;
-  /* 2 * π * 88 */
+
+  /* Framer-style spring easing */
+  --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── Reset ──────────────────────────────────────────────────────────────────── */
+/* ── Reset ─────────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -50,7 +52,7 @@ button {
   background: none;
 }
 
-/* ── Body & Grain ──────────────────────────────────────────────────────────── */
+/* ── Body & Grain ──────────────────────────────────────────────────────── */
 body {
   width: 360px;
   min-height: 480px;
@@ -66,7 +68,7 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.3;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
   background-repeat: repeat;
   z-index: 100;
@@ -80,7 +82,85 @@ body {
   position: relative;
 }
 
-/* ── Header ─────────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════
+   FRAMER-STYLE ENTRANCE ANIMATIONS — staggered spring reveals
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Base state: everything starts invisible + shifted */
+.header,
+.status-banner:not([hidden]),
+.timer-section,
+.stats-row,
+.section-label,
+.difficulty-toggle,
+.message-bar:not([hidden]) {
+  animation: spring-in 0.7s var(--spring) both;
+}
+
+/* Stagger delays */
+.header {
+  animation-delay: 0ms;
+}
+
+.timer-section {
+  animation-delay: 80ms;
+}
+
+.stats-row {
+  animation-delay: 180ms;
+}
+
+.section-label {
+  animation-delay: 260ms;
+}
+
+.difficulty-toggle {
+  animation-delay: 300ms;
+}
+
+/* Individual stat cards stagger within the row */
+.stat-card:nth-child(1) {
+  animation: spring-in 0.6s var(--spring) 200ms both;
+}
+
+.stat-card:nth-child(2) {
+  animation: spring-in 0.6s var(--spring) 260ms both;
+}
+
+.stat-card:nth-child(3) {
+  animation: spring-in 0.6s var(--spring) 320ms both;
+}
+
+@keyframes spring-in {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Ring has its own scale-up entrance */
+.ring-container {
+  animation: ring-reveal 0.9s var(--spring-soft) 100ms both;
+}
+
+@keyframes ring-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
 .header {
   display: flex;
   align-items: center;
@@ -100,6 +180,11 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--accent);
+  transition: transform 0.4s var(--spring);
+}
+
+.logo-mark:hover {
+  transform: rotate(-10deg) scale(1.1);
 }
 
 .logo-mark svg {
@@ -123,12 +208,13 @@ body {
   height: 32px;
   border-radius: 8px;
   color: var(--text-muted);
-  transition: color 0.2s, background 0.2s;
+  transition: color 0.2s, background 0.2s, transform 0.4s var(--spring);
 }
 
 .settings-btn:hover {
   color: var(--accent);
   background: var(--accent-soft);
+  transform: rotate(60deg);
 }
 
 .settings-btn svg {
@@ -136,7 +222,7 @@ body {
   height: 16px;
 }
 
-/* ── Status Banner ──────────────────────────────────────────────────────────── */
+/* ── Status Banner ─────────────────────────────────────────────────────── */
 .status-banner {
   display: flex;
   align-items: center;
@@ -149,7 +235,7 @@ body {
   font-weight: 500;
   color: var(--warn);
   letter-spacing: 0.02em;
-  animation: pulse-soft 3s ease-in-out infinite;
+  animation: slide-down 0.5s var(--ease-out) both, pulse-soft 3s ease-in-out 0.5s infinite;
 }
 
 .status-dot {
@@ -158,6 +244,19 @@ body {
   border-radius: 50%;
   background: var(--warn);
   flex-shrink: 0;
+  animation: dot-blink 1.5s ease-in-out infinite;
+}
+
+@keyframes slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse-soft {
@@ -172,7 +271,21 @@ body {
   }
 }
 
-/* ── Timer Ring ─────────────────────────────────────────────────────────────── */
+@keyframes dot-blink {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.3;
+    transform: scale(0.6);
+  }
+}
+
+/* ── Timer Ring ────────────────────────────────────────────────────────── */
 .timer-section {
   display: flex;
   justify-content: center;
@@ -189,6 +302,12 @@ body {
   width: 200px;
   height: 200px;
   transform: rotate(-90deg);
+  filter: drop-shadow(0 0 8px var(--accent-glow));
+  transition: filter 0.6s ease;
+}
+
+.ring-svg:hover {
+  filter: drop-shadow(0 0 16px var(--accent-mid));
 }
 
 .ring-track {
@@ -204,15 +323,17 @@ body {
   stroke-linecap: round;
   stroke-dasharray: 553.0;
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1s ease, stroke 0.4s ease;
+  transition: stroke-dashoffset 0.8s var(--ease-out), stroke 0.4s ease;
 }
 
 .ring-progress.warn {
   stroke: var(--warn);
+  filter: drop-shadow(0 0 6px rgba(196, 92, 74, 0.3));
 }
 
 .ring-progress.blocked {
   stroke: var(--border);
+  filter: none;
 }
 
 .ring-center {
@@ -222,7 +343,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .timer-label {
@@ -242,7 +363,7 @@ body {
   letter-spacing: -1px;
   color: var(--text);
   line-height: 1;
-  transition: color 0.4s ease;
+  transition: color 0.4s ease, transform 0.3s var(--spring);
 }
 
 .timer-display.warn {
@@ -260,7 +381,7 @@ body {
   font-weight: 400;
 }
 
-/* ── Stats Row ──────────────────────────────────────────────────────────────── */
+/* ── Stats Row ─────────────────────────────────────────────────────────── */
 .stats-row {
   display: flex;
   gap: 10px;
@@ -272,11 +393,18 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 8px;
-  gap: 4px;
+  padding: 14px 8px;
+  gap: 5px;
   background: var(--bg-card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  transition: transform 0.35s var(--spring), box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: var(--shadow-hover);
 }
 
 .stat-value {
@@ -301,7 +429,7 @@ body {
   font-weight: 500;
 }
 
-/* ── Section label ─────────────────────────────────────────────────────────── */
+/* ── Section label ─────────────────────────────────────────────────────── */
 .section-label {
   font-size: 10px;
   font-weight: 500;
@@ -311,7 +439,7 @@ body {
   margin-bottom: -8px;
 }
 
-/* ── Difficulty Toggle ──────────────────────────────────────────────────────── */
+/* ── Difficulty Toggle ─────────────────────────────────────────────────── */
 .difficulty-toggle {
   display: flex;
   background: var(--bg-card);
@@ -328,7 +456,8 @@ body {
   color: var(--text-muted);
   font-size: 13px;
   font-weight: 500;
-  transition: background 0.25s, color 0.25s;
+  transition: background 0.3s var(--ease-out), color 0.25s, transform 0.25s var(--spring);
+  position: relative;
 }
 
 .diff-btn.active {
@@ -342,69 +471,11 @@ body {
   background: var(--surface);
 }
 
-/* ── Sync Row ───────────────────────────────────────────────────────────────── */
-.sync-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+.diff-btn:active {
+  transform: scale(0.95);
 }
 
-.sync-info {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.sync-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 9px;
-  font-size: 13px;
-  font-weight: 600;
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(91, 122, 94, 0.25);
-}
-
-.sync-btn:hover {
-  background: #4d6b50;
-  box-shadow: 0 4px 16px rgba(91, 122, 94, 0.35);
-}
-
-.sync-btn:active {
-  transform: scale(0.97);
-}
-
-.sync-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.sync-icon {
-  width: 14px;
-  height: 14px;
-}
-
-.sync-icon.spinning {
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* ── Message Bar ────────────────────────────────────────────────────────────── */
+/* ── Message Bar ───────────────────────────────────────────────────────── */
 .message-bar {
   padding: 10px 14px;
   border-radius: var(--radius);
@@ -413,6 +484,7 @@ body {
   background: var(--bg-card);
   box-shadow: var(--shadow);
   color: var(--text-muted);
+  animation: spring-in 0.5s var(--spring) both;
 }
 
 .message-bar.error {
